@@ -44,11 +44,11 @@ class MainActivity : AppCompatActivity() {
         BubbleShape(arrowDirection = BubbleShape.DIRECTION.START,
                 solidColor = 0x88FF0000.toInt(),
                 strokeColor = 0xAACFCFCF.toInt(),
-                strokeWidth = dip(10F),
-                arrowWidth = dip(20F),
+                strokeWidth = dip(20F),
+                arrowWidth = dip(30F),
                 arrowMarginTop = dip(10F),
-                arrowHeight = dip(40F),
-                cornerRadius = dip(40F)).apply { bubbleViewAlpha.background = ShapeDrawable(this) }
+                arrowHeight = dip(50F),
+                cornerRadius = dip(80F)).apply { bubbleViewAlpha.background = ShapeDrawable(this) }
     }
 }
 
