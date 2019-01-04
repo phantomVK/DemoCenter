@@ -17,42 +17,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val bubbleShapeStart = BubbleShape(arrowDirection = BubbleShape.DIRECTION.START,
-                solidColor = 0x8800FF00.toInt(),
-                strokeColor = 0xFFCFCFCF.toInt(),
-                strokeWidth = dip(1F),
-                arrowWidth = dip(6F),
-                arrowMarginTop = dip(1F),
-                arrowHeight = dip(12F),
-                cornerRadius = dip(10F))
-
         // Arrow direction: to left.
+        val bubbleShapeStart = BubbleShape(arrowDirection = BubbleShape.DIRECTION.START,
+                solidColor = 0x8800FF00.toInt(), strokeColor = 0xFFCFCFCF.toInt(),
+                strokeWidth = dip(1F), arrowWidth = dip(6F),
+                arrowMarginTop = dip(1F), arrowHeight = dip(12F),
+                cornerRadius = dip(10F))
         bubbleViewStart.background = BubbleShapeDrawable(bubbleShapeStart, dip(6F), true)
 
+        // Arrow direction: to right.
         val bubbleShapeEnd = bubbleShapeStart.clone().apply { arrowDirection = BubbleShape.DIRECTION.END }
-
-        val darkColor = Color.argb(Color.alpha(bubbleShapeStart.solidColor),
-                (Color.red(bubbleShapeStart.solidColor) * 0.9).toInt(),
-                (Color.green(bubbleShapeStart.solidColor) * 0.9).toInt(),
-                (Color.blue(bubbleShapeStart.solidColor) * 0.9).toInt())
-
         bubbleViewClickable.apply {
-            background = bubbleStateListDrawable(this@MainActivity, bubbleShapeEnd, darkColor)
+            background = bubbleStateListDrawable(this@MainActivity, bubbleShapeEnd)
             setOnClickListener {}
         }
 
-        BubbleShape(arrowDirection = BubbleShape.DIRECTION.START,
-                solidColor = 0x88FF0000.toInt(),
-                strokeColor = 0xAACFCFCF.toInt(),
-                strokeWidth = dip(20F),
-                arrowWidth = dip(30F),
-                arrowMarginTop = dip(10F),
-                arrowHeight = dip(50F),
-                cornerRadius = dip(80F)).apply { bubbleViewAlpha.background = ShapeDrawable(this) }
+        // Big.
+        val bubbleBig = BubbleShape(arrowDirection = BubbleShape.DIRECTION.START,
+                solidColor = 0x88FF0000.toInt(), strokeColor = 0xAACFCFCF.toInt(),
+                strokeWidth = dip(20F), arrowWidth = dip(30F),
+                arrowMarginTop = dip(10F), arrowHeight = dip(50F),
+                cornerRadius = dip(80F))
+        bubbleBig.apply { bubbleViewAlpha.background = ShapeDrawable(this) }
     }
 }
 
-fun bubbleStateListDrawable(context: Context, shape: BubbleShape, darkColor: Int) = StateListDrawable().apply {
+fun bubbleStateListDrawable(context: Context, shape: BubbleShape) = StateListDrawable().apply {
+    val darkColor = Color.argb(
+            Color.alpha(shape.solidColor),
+            (Color.red(shape.solidColor) * 0.9).toInt(),
+            (Color.green(shape.solidColor) * 0.9).toInt(),
+            (Color.blue(shape.solidColor) * 0.9).toInt())
+
     val drawable = BubbleShapeDrawable(shape, context.dip(6F), true)
     val darkShape = shape.clone().apply { solidColor = darkColor }
     val darkDrawable = BubbleShapeDrawable(darkShape, context.dip(6F), true)
