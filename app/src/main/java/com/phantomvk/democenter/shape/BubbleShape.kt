@@ -7,7 +7,7 @@ import android.graphics.RectF
 import android.graphics.drawable.shapes.Shape
 import android.support.annotation.ColorInt
 
-class BubbleShape constructor(var arrowDirection: DIRECTION,
+class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECTION.START,
                               @ColorInt var solidColor: Int,
                               @ColorInt var strokeColor: Int,
                               var strokeWidth: Int,

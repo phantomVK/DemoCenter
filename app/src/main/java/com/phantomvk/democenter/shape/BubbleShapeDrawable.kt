@@ -1,7 +1,10 @@
 package com.phantomvk.democenter.shape
 
+import android.content.Context
+import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.StateListDrawable
 
 class BubbleShapeDrawable : ShapeDrawable {
     /**
@@ -41,5 +44,29 @@ class BubbleShapeDrawable : ShapeDrawable {
      */
     constructor(shape: BubbleShape, padding: Rect) : super(shape) {
         setPadding(padding)
+    }
+
+    companion object {
+        private fun Context.dip(value: Float): Int = (value * resources.displayMetrics.density).toInt()
+
+        fun bubbleStateListDrawable(context: Context, shape: BubbleShape, isSender: Boolean): StateListDrawable {
+            val darkColor = Color.argb(
+                    Color.alpha(shape.solidColor),
+                    (Color.red(shape.solidColor) * 0.9).toInt(),
+                    (Color.green(shape.solidColor) * 0.9).toInt(),
+                    (Color.blue(shape.solidColor) * 0.9).toInt())
+
+            shape.arrowDirection = if (isSender) BubbleShape.DIRECTION.END else BubbleShape.DIRECTION.START
+
+            val drawable = BubbleShapeDrawable(shape, context.dip(6F), true)
+            val darkShape = shape.clone().apply { solidColor = darkColor }
+            val darkDrawable = BubbleShapeDrawable(darkShape, context.dip(6F), true)
+
+            return StateListDrawable().apply {
+                addState(intArrayOf(android.R.attr.state_pressed), darkDrawable)
+                addState(intArrayOf(android.R.attr.state_selected), darkDrawable)
+                addState(intArrayOf(), drawable)
+            }
+        }
     }
 }

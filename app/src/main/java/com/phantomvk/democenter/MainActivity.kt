@@ -1,14 +1,11 @@
 package com.phantomvk.democenter
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.phantomvk.democenter.shape.BubbleShape
 import com.phantomvk.democenter.shape.BubbleShapeDrawable
-import com.phantomvk.democenter.util.dip
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         // Arrow direction: to left.
-        val bubbleShapeStart = BubbleShape(arrowDirection = BubbleShape.DIRECTION.START,
+        val bubbleShapeStart = BubbleShape(
                 solidColor = 0x8800FF00.toInt(), strokeColor = 0xFFCFCFCF.toInt(),
                 strokeWidth = dip(1F), arrowWidth = dip(6F),
                 arrowMarginTop = dip(1F), arrowHeight = dip(12F),
@@ -26,11 +23,9 @@ class MainActivity : AppCompatActivity() {
         bubbleViewStart.background = BubbleShapeDrawable(bubbleShapeStart, dip(6F), true)
 
         // Arrow direction: to right.
-        val bubbleShapeEnd = bubbleShapeStart.clone().apply { arrowDirection = BubbleShape.DIRECTION.END }
-        bubbleViewClickable.apply {
-            background = bubbleStateListDrawable(this@MainActivity, bubbleShapeEnd)
-            setOnClickListener {}
-        }
+        val bg = BubbleShapeDrawable.bubbleStateListDrawable(this@MainActivity, bubbleShapeStart.clone(), true)
+        bubbleViewClickable.background = bg
+        bubbleViewClickable.setOnClickListener {}
 
         // Big.
         val bubbleBig = BubbleShape(arrowDirection = BubbleShape.DIRECTION.START,
@@ -38,21 +33,8 @@ class MainActivity : AppCompatActivity() {
                 strokeWidth = dip(20F), arrowWidth = dip(30F),
                 arrowMarginTop = dip(10F), arrowHeight = dip(50F),
                 cornerRadius = dip(80F))
-        bubbleBig.apply { bubbleViewAlpha.background = ShapeDrawable(this) }
+        bubbleViewAlpha.background = ShapeDrawable(bubbleBig)
     }
 }
 
-fun bubbleStateListDrawable(context: Context, shape: BubbleShape) = StateListDrawable().apply {
-    val darkColor = Color.argb(
-            Color.alpha(shape.solidColor),
-            (Color.red(shape.solidColor) * 0.9).toInt(),
-            (Color.green(shape.solidColor) * 0.9).toInt(),
-            (Color.blue(shape.solidColor) * 0.9).toInt())
-
-    val drawable = BubbleShapeDrawable(shape, context.dip(6F), true)
-    val darkShape = shape.clone().apply { solidColor = darkColor }
-    val darkDrawable = BubbleShapeDrawable(darkShape, context.dip(6F), true)
-    addState(intArrayOf(android.R.attr.state_pressed), darkDrawable)
-    addState(intArrayOf(android.R.attr.state_selected), darkDrawable)
-    addState(intArrayOf(), drawable)
-}
+private fun Context.dip(value: Float): Int = (value * resources.displayMetrics.density).toInt()
