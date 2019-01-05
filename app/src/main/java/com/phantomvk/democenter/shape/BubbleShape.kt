@@ -7,6 +7,10 @@ import android.graphics.RectF
 import android.graphics.drawable.shapes.Shape
 import android.support.annotation.ColorInt
 
+/**
+ * Draw the shape of the message contents like bubbles. This class used for main thread only,
+ * because properties are shared in different cloned objects to reduce memory usage.
+ */
 class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECTION.START,
                               @ColorInt var solidColor: Int,
                               @ColorInt var strokeColor: Int,
@@ -16,14 +20,19 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
                               var arrowHeight: Int,
                               var arrowMarginTop: Int) : Shape() {
     /**
-     * The path for upper area.
+     * The path for the upper area.
      */
     private var mUpperPath = Path()
 
     /**
-     * The path for lower area.
+     * The path for the lower area.
      */
     private var mLowerPath = Path()
+
+    /**
+     * RectF for reusing.
+     */
+    private var mRectF = RectF()
 
     /**
      * Stroke offset.
@@ -50,6 +59,16 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
      */
     private val mUpperHeightFA = mUpperHeightNA + arrowHeight
 
+    /**
+     * Latest resized width.
+     */
+    private var mResizedWidth = -1F
+
+    /**
+     * Latest resized height.
+     */
+    private var mResizedHeight = -1F
+
     override fun draw(canvas: Canvas, paint: Paint) {
         paint.color = solidColor
         paint.style = Paint.Style.FILL
@@ -67,8 +86,8 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
         canvas.drawPath(mUpperPath, paint)
 
         // Middle area.
-        val rectF = RectF(arrowWidth.toFloat(), mUpperHeightFA, width, height - cornerRadius)
-        canvas.drawRect(rectF, paint)
+        mRectF.set(arrowWidth.toFloat(), mUpperHeightFA, width, height - cornerRadius)
+        canvas.drawRect(mRectF, paint)
 
         // Lower area.
         canvas.drawPath(mLowerPath, paint)
@@ -96,23 +115,23 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
         paint.strokeWidth = strokeWidth.toFloat()
 
         // Left top corner and the top line.
-        val leftTop = RectF(arrowWidth + strokeOffset, strokeOffset, arrowWidth + cornerRadius - strokeOffset, cornerRadius - strokeOffset)
-        canvas.drawArc(leftTop, 180F, 90F, false, paint)
+        mRectF.set(arrowWidth + strokeOffset, strokeOffset, arrowWidth + cornerRadius - strokeOffset, cornerRadius - strokeOffset)
+        canvas.drawArc(mRectF, 180F, 90F, false, paint)
         canvas.drawLine(arrowWidth + cornerRadius - radiusOffset, strokeOffset, width - cornerRadius + radiusOffset, strokeOffset, paint)
 
         // Right top corner and the right line.
-        val rightTop = RectF(width - cornerRadius + strokeOffset, strokeOffset, width - strokeOffset, cornerRadius - strokeOffset)
-        canvas.drawArc(rightTop, 270F, 90F, false, paint)
+        mRectF.set(width - cornerRadius + strokeOffset, strokeOffset, width - strokeOffset, cornerRadius - strokeOffset)
+        canvas.drawArc(mRectF, 270F, 90F, false, paint)
         canvas.drawLine(width - strokeOffset, cornerRadius - radiusOffset, width - strokeOffset, height - cornerRadius + radiusOffset, paint)
 
         // Right bottom corner and the bottom line.
-        val rightBottom = RectF(width - cornerRadius + strokeOffset, height - cornerRadius + strokeOffset, width - strokeOffset, height - strokeOffset)
-        canvas.drawArc(rightBottom, 0F, 90F, false, paint)
+        mRectF.set(width - cornerRadius + strokeOffset, height - cornerRadius + strokeOffset, width - strokeOffset, height - strokeOffset)
+        canvas.drawArc(mRectF, 0F, 90F, false, paint)
         canvas.drawLine(width - cornerRadius + radiusOffset, height - strokeOffset, arrowWidth + cornerRadius - radiusOffset, height - strokeOffset, paint)
 
         // Left bottom corner and the left lower line.
-        val leftBottom = RectF(arrowWidth + strokeOffset, height - cornerRadius + strokeOffset, arrowWidth + cornerRadius - strokeOffset, height - strokeOffset)
-        canvas.drawArc(leftBottom, 90F, 90F, false, paint)
+        mRectF.set(arrowWidth + strokeOffset, height - cornerRadius + strokeOffset, arrowWidth + cornerRadius - strokeOffset, height - strokeOffset)
+        canvas.drawArc(mRectF, 90F, 90F, false, paint)
         canvas.drawLine(arrowWidth + strokeOffset, height - cornerRadius + radiusOffset, arrowWidth + strokeOffset, upperHeightFA, paint)
 
         // Arrow shape and the left upper line.
@@ -121,9 +140,20 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
         canvas.drawLine(arrowWidth + strokeOffset, mUpperHeightNA, arrowWidth + strokeOffset, cornerRadius - radiusOffset, paint)
     }
 
+    /**
+     * Resize when width or height is changed.
+     */
     override fun onResize(width: Float, height: Float) {
-        resizeTopPath(width)
-        resizeBottomPath(width, height)
+        if (mResizedHeight != height || mResizedWidth != width) {
+            if (mResizedWidth != width) {
+                resizeTopPath(width)
+            }
+
+            resizeBottomPath(width, height)
+
+            mResizedWidth = width
+            mResizedHeight = height
+        }
     }
 
     private fun resizeTopPath(width: Float) {
@@ -144,15 +174,15 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
         mUpperPath.lineTo(arrowWidth, cornerRadius)
 
         // Left top corner.
-        val leftTop = RectF(arrowWidth, 0F, arrowWidth + cornerRadius, cornerRadius)
-        mUpperPath.arcTo(leftTop, 180F, 90F)
+        mRectF.set(arrowWidth, 0F, arrowWidth + cornerRadius, cornerRadius)
+        mUpperPath.arcTo(mRectF, 180F, 90F)
 
         // Top line.
         mUpperPath.lineTo(width - cornerRadius, 0F)
 
         // Right top corner.
-        val rightTop = RectF(width - cornerRadius, 0F, width, cornerRadius)
-        mUpperPath.arcTo(rightTop, 270F, 90F)
+        mRectF.set(width - cornerRadius, 0F, width, cornerRadius)
+        mUpperPath.arcTo(mRectF, 270F, 90F)
 
         // Right line.
         mUpperPath.lineTo(width, upperHeightFA)
@@ -166,29 +196,24 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
 
         // Right bottom corner.
         mLowerPath.moveTo(width, height - cornerRadius)
-        val rightBottom = RectF(width - cornerRadius, height - cornerRadius, width, height)
-        mLowerPath.arcTo(rightBottom, 0F, 90F)
+        mRectF.set(width - cornerRadius, height - cornerRadius, width, height)
+        mLowerPath.arcTo(mRectF, 0F, 90F)
 
         // Bottom line.
         mLowerPath.lineTo((arrowWidth + cornerRadius), height)
 
         // Left bottom corner.
-        val leftBottom = RectF(arrowWidth, height - cornerRadius, (arrowWidth + cornerRadius), height)
-        mLowerPath.arcTo(leftBottom, 90F, 90F)
+        mRectF.set(arrowWidth, height - cornerRadius, (arrowWidth + cornerRadius), height)
+        mLowerPath.arcTo(mRectF, 90F, 90F)
 
         // Left lower line.
         mLowerPath.lineTo(arrowWidth, height - cornerRadius)
     }
 
     /**
-     * Deep clone as a new object.
+     * Shallow clone as a new object.
      */
-    override fun clone(): BubbleShape {
-        val shape = super.clone() as BubbleShape
-        shape.mUpperPath = Path()
-        shape.mLowerPath = Path()
-        return shape
-    }
+    override fun clone(): BubbleShape = super.clone() as BubbleShape
 
     /**
      * Arrow direction.
