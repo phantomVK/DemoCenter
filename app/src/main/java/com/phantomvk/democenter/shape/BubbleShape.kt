@@ -18,12 +18,12 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
     /**
      * The path for upper area.
      */
-    private val mUpperPath = Path()
+    private var mUpperPath = Path()
 
     /**
      * The path for lower area.
      */
-    private val mLowerPath = Path()
+    private var mLowerPath = Path()
 
     /**
      * Stroke offset.
@@ -180,7 +180,15 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
         mLowerPath.lineTo(arrowWidth, height - cornerRadius)
     }
 
-    override fun clone(): BubbleShape = super.clone() as BubbleShape
+    /**
+     * Deep clone as a new object.
+     */
+    override fun clone(): BubbleShape {
+        val shape = super.clone() as BubbleShape
+        shape.mUpperPath = Path()
+        shape.mLowerPath = Path()
+        return shape
+    }
 
     /**
      * Arrow direction.
