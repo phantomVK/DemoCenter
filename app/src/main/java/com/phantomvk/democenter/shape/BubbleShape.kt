@@ -20,14 +20,9 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
                               var arrowHeight: Int,
                               var arrowMarginTop: Int) : Shape() {
     /**
-     * The path for the upper area.
+     * The path for to fill.
      */
-    private var mUpperPath = Path()
-
-    /**
-     * The path for the lower area.
-     */
-    private var mLowerPath = Path()
+    private var mPathFill = Path()
 
     /**
      * RectF for reusing.
@@ -82,15 +77,8 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
             canvas.scale(-1F, 1F, width / 2, height / 2)
         }
 
-        // Upper area.
-        canvas.drawPath(mUpperPath, paint)
-
-        // Middle area.
-        mRectF.set(arrowWidth.toFloat(), mUpperHeightFA, width, height - cornerRadius)
-        canvas.drawRect(mRectF, paint)
-
-        // Lower area.
-        canvas.drawPath(mLowerPath, paint)
+        // Fill path.
+        canvas.drawPath(mPathFill, paint)
 
         // Draw stroke.
         drawStroke(canvas, paint)
@@ -145,69 +133,54 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
      */
     override fun onResize(width: Float, height: Float) {
         if (mResizedHeight != height || mResizedWidth != width) {
-            if (mResizedWidth != width) {
-                resizeTopPath(width)
-            }
-
-            resizeBottomPath(width, height)
+            resizePath(width, height)
 
             mResizedWidth = width
             mResizedHeight = height
         }
     }
 
-    private fun resizeTopPath(width: Float) {
+    private fun resizePath(width: Float, height: Float) {
         val cornerRadius = cornerRadius.toFloat()
         val arrowWidth = arrowWidth.toFloat()
-        val upperHeightNA = mUpperHeightNA
-        val upperHeightHA = mUpperHeightHA
-        val upperHeightFA = mUpperHeightFA
 
-        mUpperPath.reset()
+        mPathFill.reset()
 
-        // Arrow
-        mUpperPath.moveTo(arrowWidth, upperHeightFA)
-        mUpperPath.lineTo(0F, upperHeightHA)
-        mUpperPath.lineTo(arrowWidth, upperHeightNA)
+        // Draw arrow.
+        mPathFill.moveTo(arrowWidth, mUpperHeightFA)
+        mPathFill.lineTo(0F, mUpperHeightHA)
+        mPathFill.lineTo(arrowWidth, mUpperHeightNA)
 
-        // Left upper line.
-        mUpperPath.lineTo(arrowWidth, cornerRadius)
+        // Upper left line.
+        mPathFill.lineTo(arrowWidth, cornerRadius)
 
-        // Left top corner.
+        // Upper left corner.
         mRectF.set(arrowWidth, 0F, arrowWidth + cornerRadius, cornerRadius)
-        mUpperPath.arcTo(mRectF, 180F, 90F)
+        mPathFill.arcTo(mRectF, 180F, 90F)
 
-        // Top line.
-        mUpperPath.lineTo(width - cornerRadius, 0F)
+        // Upper line.
+        mPathFill.lineTo(width - cornerRadius, 0F)
 
-        // Right top corner.
+        // Upper right corner.
         mRectF.set(width - cornerRadius, 0F, width, cornerRadius)
-        mUpperPath.arcTo(mRectF, 270F, 90F)
+        mPathFill.arcTo(mRectF, 270F, 90F)
 
         // Right line.
-        mUpperPath.lineTo(width, upperHeightFA)
-    }
+        mPathFill.lineTo(width, height - cornerRadius)
 
-    private fun resizeBottomPath(width: Float, height: Float) {
-        val cornerRadius = cornerRadius.toFloat()
-        val arrowWidth = arrowWidth.toFloat()
-
-        mLowerPath.reset()
-
-        // Right bottom corner.
-        mLowerPath.moveTo(width, height - cornerRadius)
+        // Bottom right corner.
         mRectF.set(width - cornerRadius, height - cornerRadius, width, height)
-        mLowerPath.arcTo(mRectF, 0F, 90F)
+        mPathFill.arcTo(mRectF, 0F, 90F)
 
         // Bottom line.
-        mLowerPath.lineTo((arrowWidth + cornerRadius), height)
+        mPathFill.lineTo((arrowWidth + cornerRadius), height)
 
-        // Left bottom corner.
+        // Bottom left corner.
         mRectF.set(arrowWidth, height - cornerRadius, (arrowWidth + cornerRadius), height)
-        mLowerPath.arcTo(mRectF, 90F, 90F)
+        mPathFill.arcTo(mRectF, 90F, 90F)
 
-        // Left lower line.
-        mLowerPath.lineTo(arrowWidth, height - cornerRadius)
+        // Lower left line.
+        mPathFill.close()
     }
 
     /**
