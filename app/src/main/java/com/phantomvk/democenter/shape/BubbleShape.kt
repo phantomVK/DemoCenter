@@ -13,11 +13,11 @@ import android.support.annotation.ColorInt
 class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECTION.START,
                               @ColorInt var solidColor: Int,
                               @ColorInt var strokeColor: Int,
-                              var strokeWidth: Int,
-                              var cornerRadius: Int,
-                              var arrowWidth: Int,
-                              var arrowHeight: Int,
-                              var arrowMarginTop: Int) : Shape() {
+                              var strokeWidth: Float,
+                              var cornerRadius: Float,
+                              var arrowWidth: Float,
+                              var arrowHeight: Float,
+                              var arrowMarginTop: Float) : Shape() {
     /**
      * The path to fill canvas.
      */
@@ -36,7 +36,7 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
     /**
      * Stroke offset.
      */
-    private var mStrokeOffset = (strokeWidth ushr 1).toFloat()
+    private var mStrokeOffset = strokeWidth / 2
 
     /**
      * The height of upper area with no arrow.
@@ -46,7 +46,7 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
     /**
      * The height of upper area with half a arrow.
      */
-    private val mUpperHeightHA = mUpperHeightNA + (arrowHeight ushr 1).toFloat()
+    private val mUpperHeightHA = mUpperHeightNA + (arrowHeight / 2)
 
     /**
      * The height of upper area with a full arrow.
@@ -89,7 +89,7 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
         paint.style = Paint.Style.STROKE
         paint.strokeCap = Paint.Cap.ROUND
         paint.strokeJoin = Paint.Join.ROUND
-        paint.strokeWidth = strokeWidth.toFloat()
+        paint.strokeWidth = strokeWidth
 
         canvas.drawPath(mPathStroke, paint)
     }
@@ -108,8 +108,8 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
     }
 
     private fun resizeFillPath(width: Float, height: Float) {
-        val cornerRadius = cornerRadius.toFloat()
-        val arrowWidth = arrowWidth.toFloat()
+        val cornerRadius = cornerRadius
+        val arrowWidth = arrowWidth
 
         mPathFill.reset()
 
@@ -143,7 +143,7 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
 
     private fun resizeStrokePath(width: Float, height: Float) {
         val strokeOffset = mStrokeOffset
-        val cornerRadius = cornerRadius.toFloat()
+        val cornerRadius = cornerRadius
         val arrowWidth = arrowWidth
 
         mPathStroke.reset()

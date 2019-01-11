@@ -9,4 +9,4 @@ inline fun <reified T : Activity> Button.startActivity() {
     setOnClickListener { context.startActivity(Intent(context, T::class.java)) }
 }
 
-fun Context.dip(value: Float) = (value * resources.displayMetrics.density).toInt()
+fun Context.dip(value: Float) = value * resources.displayMetrics.density

@@ -21,7 +21,7 @@ class BubbleShapeActivity : AppCompatActivity() {
                 strokeWidth = dip(1F), arrowWidth = dip(6F),
                 arrowMarginTop = dip(1F), arrowHeight = dip(12F),
                 cornerRadius = dip(10F))
-        bubbleViewStart.background = BubbleShapeDrawable(bubbleShapeStart, dip(6F), true)
+        bubbleViewStart.background = BubbleShapeDrawable(bubbleShapeStart, dip(6F).toInt(), true)
 
         // Arrow direction: to right.
         val bg = BubbleShapeDrawable.bubbleStateListDrawable(this@BubbleShapeActivity, bubbleShapeStart.clone(), true)

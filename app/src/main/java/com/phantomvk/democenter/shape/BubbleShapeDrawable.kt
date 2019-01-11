@@ -27,7 +27,7 @@ class BubbleShapeDrawable : ShapeDrawable {
      */
     constructor(shape: BubbleShape, padding: Int, autoPadding: Boolean) : super(shape) {
         if (autoPadding) {
-            val fixedPadding = shape.arrowWidth + shape.strokeWidth + padding
+            val fixedPadding = (shape.arrowWidth + shape.strokeWidth + padding).toInt()
             if (shape.arrowDirection == BubbleShape.DIRECTION.START) {
                 setPadding(fixedPadding, padding, padding, padding)
             } else {
