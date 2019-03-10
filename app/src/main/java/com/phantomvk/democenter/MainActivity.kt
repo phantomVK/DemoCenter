@@ -16,4 +16,3 @@ class MainActivity : AppCompatActivity() {
         btnBubbleShape.startActivity<BubbleShapeActivity>()
     }
 }
-

@@ -37,4 +37,3 @@ class BubbleShapeActivity : AppCompatActivity() {
         bubbleViewAlpha.background = ShapeDrawable(bubbleBig)
     }
 }
-
