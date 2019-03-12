@@ -53,16 +53,6 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
      */
     private val mUpperHeightFA = mUpperHeightNA + arrowHeight
 
-    /**
-     * Latest resized width.
-     */
-    private var mResizedWidth = -1F
-
-    /**
-     * Latest resized height.
-     */
-    private var mResizedHeight = -1F
-
     override fun draw(canvas: Canvas, paint: Paint) {
         // Set arrow direction.
         if (arrowDirection == DIRECTION.END) {
@@ -98,13 +88,8 @@ class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECT
      * Resize when width or height is changed.
      */
     override fun onResize(width: Float, height: Float) {
-        if (mResizedHeight != height || mResizedWidth != width) {
-            resizeStrokePath(width, height)
-            resizeFillPath(width, height)
-
-            mResizedWidth = width
-            mResizedHeight = height
-        }
+        resizeStrokePath(width, height)
+        resizeFillPath(width, height)
     }
 
     private fun resizeFillPath(width: Float, height: Float) {
