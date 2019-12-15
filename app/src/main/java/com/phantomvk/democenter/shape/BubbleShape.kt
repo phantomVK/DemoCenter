@@ -5,12 +5,12 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.drawable.shapes.Shape
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 /**
  * Draw the shape of the message contents like bubbles.
  */
-class BubbleShape constructor(var arrowDirection: DIRECTION = BubbleShape.DIRECTION.START,
+class BubbleShape constructor(var arrowDirection: DIRECTION = DIRECTION.START,
                               @ColorInt var solidColor: Int,
                               @ColorInt var strokeColor: Int,
                               var strokeWidth: Float,

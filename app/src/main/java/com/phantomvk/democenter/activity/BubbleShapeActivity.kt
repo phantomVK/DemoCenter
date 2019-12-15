@@ -2,7 +2,7 @@ package com.phantomvk.democenter.activity
 
 import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.phantomvk.democenter.R
 import com.phantomvk.democenter.shape.BubbleShape
 import com.phantomvk.democenter.shape.BubbleShapeDrawable
