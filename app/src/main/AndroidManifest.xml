@@ -18,7 +18,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.BubbleShapeActivity" />
-    </application>
 
+        <activity
+            android:name=".bubbleShape.BubbleShapeActivity"
+            android:label="BubbleShapeActivity" />
+
+        <activity
+            android:name=".aidl.AidlActivity"
+            android:label="AidlActivity" />
+
+        <service
+            android:name=".aidl.ManagerService"
+            android:process=":remote" />
+    </application>
 </manifest>

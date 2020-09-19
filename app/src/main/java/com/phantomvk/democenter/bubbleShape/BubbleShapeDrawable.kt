@@ -1,4 +1,4 @@
-package com.phantomvk.democenter.shape
+package com.phantomvk.democenter.bubbleShape
 
 import android.content.Context
 import android.graphics.Color

@@ -1,13 +1,13 @@
-package com.phantomvk.democenter.activity
+package com.phantomvk.democenter.bubbleShape
 
+import android.content.Context
 import android.graphics.drawable.ShapeDrawable
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.phantomvk.democenter.R
-import com.phantomvk.democenter.shape.BubbleShape
-import com.phantomvk.democenter.shape.BubbleShapeDrawable
-import com.phantomvk.democenter.util.dip
 import kotlinx.android.synthetic.main.activity_bubble_shape.*
+
+fun Context.dip(value: Float) = value * resources.displayMetrics.density
 
 class BubbleShapeActivity : AppCompatActivity() {
 
