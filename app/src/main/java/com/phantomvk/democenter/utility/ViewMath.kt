@@ -2,6 +2,7 @@ package com.phantomvk.democenter.utility
 
 import android.graphics.PointF
 import kotlin.math.atan2
+import kotlin.math.sqrt
 
 /**
  * Calculate the rotation angle of view by two points.
@@ -64,4 +65,33 @@ fun getCenterCoordinates(
   val x = leftTop.x + rightBottom.x
   val y = leftTop.y + rightBottom.y
   saveTo.set(x / 2, y / 2)
+}
+
+/**
+ * Get the distance by two points.
+ *
+ * @return distance in float
+ */
+fun getDistance(
+  pointA: PointF,
+  pointB: PointF
+): Float {
+  return getDistance(
+    pointA.x, pointA.y,
+    pointB.x, pointB.y
+  )
+}
+
+/**
+ * Get the distance by two points.
+ *
+ * @return distance in float
+ */
+fun getDistance(
+  x1: Float, y1: Float,
+  x2: Float, y2: Float
+): Float {
+  val x = x1 - x2
+  val y = y1 - y2
+  return sqrt(x * x + y * y)
 }
