@@ -95,3 +95,31 @@ fun getDistance(
   val y = y1 - y2
   return sqrt(x * x + y * y)
 }
+
+/**
+ * Get vector with 3 points.
+ */
+fun getVector(
+  p1: PointF,
+  p2: PointF,
+  point: PointF
+): Float {
+  return (p2.x - p1.x) * (point.y - p1.y) - (point.x - p1.x) * (p2.y - p1.y)
+}
+
+/**
+ * If point is in matrix.
+ */
+fun isPointInMatrix(
+  leftTop: PointF,
+  rightTop: PointF,
+  leftBottom: PointF,
+  rightBottom: PointF,
+  point: PointF
+): Boolean {
+  val c1 = getVector(leftTop, rightTop, point)
+  val c2 = getVector(leftBottom, rightBottom, point)
+  val c3 = getVector(leftTop, leftBottom, point)
+  val c4 = getVector(rightTop, rightBottom, point)
+  return (c1 * c2 >= 0) && (c3 * c4 >= 0)
+}
