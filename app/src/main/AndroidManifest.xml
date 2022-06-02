@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.phantomvk.democenter">
 
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -26,6 +28,10 @@
         <activity
             android:name=".aidl.AidlActivity"
             android:label="AidlActivity" />
+
+        <activity
+            android:name=".dragDrop.DragDropActivity"
+            android:label="DragDropActivity" />
 
         <service
             android:name=".aidl.ManagerService"
