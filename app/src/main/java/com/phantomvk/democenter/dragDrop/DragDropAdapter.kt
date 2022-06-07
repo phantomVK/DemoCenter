@@ -27,7 +27,6 @@ class DragDropAdapter(
     val viewHolderPos = (viewHolder as MainViewHolder).bindingAdapterPosition
     val targetPos = (target as MainViewHolder).bindingAdapterPosition
 
-    target.isDurationTextVisible(true)
     Collections.swap(sortedList, viewHolderPos, targetPos)
 
     notifyItemMoved(viewHolderPos, targetPos)
@@ -74,11 +73,8 @@ class DragDropAdapter(
     itemView: View,
     textBackgroundColor: Int
   ) : ViewHolder(itemView, textBackgroundColor) {
-    private val coverView: CardView = itemView.findViewById(R.id.cover_view)
 
-    fun isDurationTextVisible(visible: Boolean) {
-      durationTextView.visibility = if (visible) View.VISIBLE else View.GONE
-    }
+    private val coverView: CardView = itemView.findViewById(R.id.cover_view)
 
     fun updateAnimation(isNotIdle: Boolean) {
       val preValue = if (isNotIdle) 1.0F else 0.0F
