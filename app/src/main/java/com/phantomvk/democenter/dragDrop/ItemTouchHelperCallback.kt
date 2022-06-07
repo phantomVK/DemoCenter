@@ -42,8 +42,7 @@ class ItemTouchHelperCallback(
     super.onSelectedChanged(viewHolder, actionState)
     if (viewHolder is DragDropAdapter.MainViewHolder) {
       Hardware.vibrate(viewHolder.itemView.context, 20)
-      viewHolder.setDurationTextViewAlpha(actionState != ItemTouchHelper.ACTION_STATE_IDLE)
-      viewHolder.scaleCoverView(true)
+      viewHolder.updateAnimation(actionState != ItemTouchHelper.ACTION_STATE_IDLE)
     }
   }
 
@@ -51,8 +50,7 @@ class ItemTouchHelperCallback(
     super.clearView(recyclerView, viewHolder)
     if (viewHolder is DragDropAdapter.MainViewHolder) {
       viewHolder.setDurationText()
-      viewHolder.setDurationTextViewAlpha(recyclerView.isComputingLayout)
-      viewHolder.scaleCoverView(false)
+      viewHolder.updateAnimation(recyclerView.isComputingLayout)
     }
   }
 }

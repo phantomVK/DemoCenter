@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.phantomvk.democenter.R
 import java.util.*
@@ -16,6 +17,8 @@ class DragDropAdapter(
   private val originList: List<DragDropModel>,
   private val sortedList: MutableList<DragDropModel>,
 ) : RecyclerView.Adapter<DragDropAdapter.ViewHolder>() {
+
+  private val textBackgroundColor = ContextCompat.getColor(inflater.context, R.color.black50)
 
   fun onMove(
     viewHolder: RecyclerView.ViewHolder,
@@ -34,10 +37,10 @@ class DragDropAdapter(
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     return if (isForeground) {
       val v = inflater.inflate(R.layout.item_view_drag_drop_minor, parent, false)
-      MainViewHolder(v)
+      MainViewHolder(v, textBackgroundColor)
     } else {
       val v = inflater.inflate(R.layout.item_view_drag_drop_main, parent, false)
-      MinorViewHolder(v)
+      MinorViewHolder(v, textBackgroundColor)
     }
   }
 
@@ -49,53 +52,53 @@ class DragDropAdapter(
     return originList.size
   }
 
-  abstract class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+  abstract inner class ViewHolder(
+    itemView: View,
+    private val textBackgroundColor: Int
+  ) : RecyclerView.ViewHolder(itemView) {
+
     protected val durationTextView: TextView = itemView.findViewById(R.id.textview_duration)
 
     open fun onBind(originModel: DragDropModel, targetModel: DragDropModel) {
-      durationTextView.text = String.format("%.1fs", originModel.duration)
+      setDurationText()
+    }
+
+    fun setDurationText() {
+      val durationStr = originList[bindingAdapterPosition].duration
+      durationTextView.text = String.format("%.1fs", durationStr)
+      durationTextView.setBackgroundColor(textBackgroundColor)
     }
   }
 
-  inner class MainViewHolder(itemView: View) : ViewHolder(itemView) {
+  inner class MainViewHolder(
+    itemView: View,
+    textBackgroundColor: Int
+  ) : ViewHolder(itemView, textBackgroundColor) {
     private val coverView: CardView = itemView.findViewById(R.id.cover_view)
 
     fun isDurationTextVisible(visible: Boolean) {
       durationTextView.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
-    fun setDurationText() {
-      val durationStr = originList[bindingAdapterPosition].duration
-      durationTextView.text = String.format("%.1fs", durationStr)
-    }
+    fun updateAnimation(isNotIdle: Boolean) {
+      val preValue = if (isNotIdle) 1.0F else 0.0F
+      val endValue = if (isNotIdle) 0.0F else 1.0F
 
-    fun setDurationTextViewAlpha(isNotIdle: Boolean) {
-      val preScale = if (isNotIdle) 1.0F else 0.0F
-      val endScale = if (isNotIdle) 0.0F else 1.0F
-
-      ValueAnimator.ofFloat(preScale, endScale)
+      ValueAnimator.ofFloat(preValue, endValue)
         .setDuration(200L)
         .apply {
           addUpdateListener {
-            durationTextView.alpha = (it.animatedValue as Float)
-          }
-        }
-        .start()
-    }
+            val floatValue = (it.animatedValue as Float)
 
-    fun scaleCoverView(isUpScale: Boolean) {
-      val preScale = if (isUpScale) 1.0F else 1.14F
-      val endScale = if (isUpScale) 1.14F else 1.0F
+            durationTextView.alpha = floatValue
+            durationTextView.background?.alpha = (floatValue * 255).toInt()
 
-      ValueAnimator.ofFloat(preScale, endScale)
-        .setDuration(200L)
-        .apply {
-          addUpdateListener {
-            val value = it.animatedValue as Float
+            val value = (1.0F - floatValue) * 0.14F + 1.0F
             coverView.scaleX = value
             coverView.scaleY = value
           }
-        }.start()
+        }
+        .start()
     }
 
     override fun onBind(originModel: DragDropModel, targetModel: DragDropModel) {
@@ -104,7 +107,10 @@ class DragDropAdapter(
     }
   }
 
-  class MinorViewHolder(itemView: View) : ViewHolder(itemView) {
+  inner class MinorViewHolder(
+    itemView: View,
+    backgroundColor: Int
+  ) : ViewHolder(itemView, backgroundColor) {
     private val indexTextView: TextView = itemView.findViewById(R.id.textview_index)
 
     override fun onBind(originModel: DragDropModel, targetModel: DragDropModel) {

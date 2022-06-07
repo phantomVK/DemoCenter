@@ -6,4 +6,6 @@
 
     <color name="white08">#14FFFFFF</color>
     <color name="white90">#E6FFFFFF</color>
+
+    <color name="black50">#80000000</color>
 </resources>
