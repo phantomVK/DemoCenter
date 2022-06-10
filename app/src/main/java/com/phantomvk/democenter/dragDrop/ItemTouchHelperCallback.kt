@@ -3,6 +3,7 @@ package com.phantomvk.democenter.dragDrop
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.phantomvk.democenter.utility.Hardware
+import kotlin.math.abs
 
 class ItemTouchHelperCallback(
   private val minorAdapter: DragDropAdapter
@@ -52,5 +53,64 @@ class ItemTouchHelperCallback(
       viewHolder.setDurationText()
       viewHolder.updateAnimation(recyclerView.isComputingLayout)
     }
+  }
+
+  override fun chooseDropTarget(
+    selected: RecyclerView.ViewHolder,
+    dropTargets: MutableList<RecyclerView.ViewHolder>,
+    curX: Int,
+    curY: Int
+  ): RecyclerView.ViewHolder? {
+    val right = curX + selected.itemView.width
+    val bottom = curY + selected.itemView.height
+    var winner: RecyclerView.ViewHolder? = null
+    var winnerScore = -1
+    val dx = curX - selected.itemView.left
+    val dy = curY - selected.itemView.top
+    val targetsSize = dropTargets.size
+    for (i in 0 until targetsSize) {
+      val target = dropTargets[i]
+      if (dx > 0) {
+        val diff = target.itemView.right - right - (selected.itemView.width / 2)
+        if (diff < 0 && target.itemView.right > selected.itemView.right) {
+          val score = abs(diff)
+          if (score > winnerScore) {
+            winnerScore = score
+            winner = target
+          }
+        }
+      }
+      if (dx < 0) {
+        val diff = target.itemView.left - curX + (selected.itemView.width / 2)
+        if (diff > 0 && target.itemView.left < selected.itemView.left) {
+          val score = abs(diff)
+          if (score > winnerScore) {
+            winnerScore = score
+            winner = target
+          }
+        }
+      }
+      if (dy < 0) {
+        val diff = target.itemView.top / 2 - curY
+        if (diff > 0 && target.itemView.top < selected.itemView.top) {
+          val score = abs(diff)
+          if (score > winnerScore) {
+            winnerScore = score
+            winner = target
+          }
+        }
+      }
+      if (dy > 0) {
+        val diff = target.itemView.bottom * 2 - bottom
+        if (diff < 0 && target.itemView.bottom > selected.itemView.bottom) {
+          val score = abs(diff)
+          if (score > winnerScore) {
+            winnerScore = score
+            winner = target
+          }
+        }
+      }
+    }
+    return winner
   }
 }
