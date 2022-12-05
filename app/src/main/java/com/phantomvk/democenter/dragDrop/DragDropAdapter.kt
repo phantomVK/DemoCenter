@@ -85,13 +85,15 @@ class DragDropAdapter(
         .apply {
           addUpdateListener {
             val floatValue = (it.animatedValue as Float)
+            val scaleValue = (1.0F - floatValue) * 0.14F + 1.0F
 
+            durationTextView.scaleX = scaleValue
+            durationTextView.scaleY = scaleValue
             durationTextView.alpha = floatValue
             durationTextView.background?.alpha = (floatValue * 255).toInt()
 
-            val value = (1.0F - floatValue) * 0.14F + 1.0F
-            coverView.scaleX = value
-            coverView.scaleY = value
+            coverView.scaleX = scaleValue
+            coverView.scaleY = scaleValue
           }
         }
         .start()
