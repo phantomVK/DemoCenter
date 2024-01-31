@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.phantomvk.democenter.aidl.AidlActivity
-import com.phantomvk.democenter.bubbleShape.BubbleShapeActivity
-import com.phantomvk.democenter.dragDrop.DragDropActivity
+import com.phantomvk.democenter.bubbleshape.BubbleShapeActivity
+import com.phantomvk.democenter.dragdrop.DragDropActivity
 
 class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {

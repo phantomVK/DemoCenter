@@ -7,13 +7,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.phantomvk.democenter.R;
 
-public class AidlActivity extends AppCompatActivity implements View.OnClickListener {
+public class AidlActivity extends AppCompatActivity {
     private IManager manager;
 
     @Override
@@ -21,42 +20,41 @@ public class AidlActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aidl);
 
-        findViewById(R.id.buttonAddBookIn).setOnClickListener(this);
-        findViewById(R.id.buttonAddBookOut).setOnClickListener(this);
-        findViewById(R.id.buttonAddBookInout).setOnClickListener(this);
+        findViewById(R.id.buttonAddBookIn).setOnClickListener((v) -> {
+            if (manager == null) return;
+            Book book = new Book("Handbook", 128);
+            Log.i("Client", "addBookIn start: " + book);
+            try {
+                manager.addBookIn(book);
+            } catch (RemoteException ignore) {
+            }
+            Log.i("Client", "addBookIn end:   " + book);
+        });
+
+        findViewById(R.id.buttonAddBookOut).setOnClickListener((c) -> {
+            if (manager == null) return;
+            Book book = new Book("Handbook", 128);
+            Log.i("Client", "addBookOut start: " + book);
+            try {
+                manager.addBookOut(book);
+            } catch (RemoteException ignore) {
+            }
+            Log.i("Client", "addBookOut end:   " + book);
+        });
+
+        findViewById(R.id.buttonAddBookInout).setOnClickListener((v) -> {
+            if (manager == null) return;
+            Book book = new Book("Handbook", 128);
+            Log.i("Client", "addBookInout start: " + book);
+            try {
+                manager.addBookInout(book);
+            } catch (RemoteException ignore) {
+            }
+            Log.i("Client", "addBookInout end:   " + book);
+        });
 
         Intent i = new Intent(this, ManagerService.class);
         bindService(i, new Connection(), BIND_AUTO_CREATE);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (manager == null) return;
-        try {
-            Book book = new Book("Handbook", 128);
-            switch (view.getId()) {
-                case R.id.buttonAddBookIn: {
-                    Log.i("Client", "addBookIn start: " + book.toString());
-                    manager.addBookIn(book);
-                    Log.i("Client", "addBookIn end:   " + book.toString());
-                    break;
-                }
-
-                case R.id.buttonAddBookOut: {
-                    Log.i("Client", "addBookOut start: " + book.toString());
-                    manager.addBookOut(book);
-                    Log.i("Client", "addBookOut end:   " + book.toString());
-                    break;
-                }
-
-                case R.id.buttonAddBookInout: {
-                    Log.i("Client", "addBookInout start: " + book.toString());
-                    manager.addBookInout(book);
-                    Log.i("Client", "addBookInout end:   " + book.toString());
-                }
-            }
-        } catch (RemoteException ignore) {
-        }
     }
 
     private class Connection implements ServiceConnection {
