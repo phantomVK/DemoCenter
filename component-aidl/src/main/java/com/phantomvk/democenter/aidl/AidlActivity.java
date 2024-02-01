@@ -10,7 +10,6 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.phantomvk.democenter.R;
 
 public class AidlActivity extends AppCompatActivity {
     private IManager manager;
