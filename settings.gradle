@@ -2,5 +2,6 @@ rootProject.name ="DemoCenter"
 include ':app'
 include ':component-bubbleshape'
 include ':component-dragdrop'
-include ':component-utility'
+include ':component-infrastructure'
 include ':component-aidl'
+include ':component-appwidgets'
