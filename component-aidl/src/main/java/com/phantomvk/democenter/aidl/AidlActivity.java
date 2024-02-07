@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class AidlActivity extends AppCompatActivity {
     private IManager manager;
+    private Connection connection = new Connection();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,13 @@ public class AidlActivity extends AppCompatActivity {
         });
 
         Intent i = new Intent(this, ManagerService.class);
-        bindService(i, new Connection(), BIND_AUTO_CREATE);
+        bindService(i, connection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(connection);
     }
 
     private class Connection implements ServiceConnection {
