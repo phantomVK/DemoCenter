@@ -14,6 +14,14 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++17"
+                arguments "-DANDROID_STL=c++_shared"
+                abiFilters "armeabi-v7a", "arm64-v8a"
+            }
+        }
     }
 
     buildTypes {
@@ -31,6 +39,12 @@ android {
     }
     buildFeatures {
         viewBinding = true
+    }
+    externalNativeBuild {
+        cmake {
+            version "3.18.1"
+            setPath("src/main/cpp/CMakeLists.txt")
+        }
     }
 }
 
